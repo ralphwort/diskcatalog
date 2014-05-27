@@ -1,0 +1,16 @@
+<form>
+	<div class="row">
+		<div class="small-12 columns">
+			<ul class="button-group round even-7">
+				<% href_base="?disk=#{@disk}&filename=#{@filename}&records_per_page=#{@records_per_page}&page_number=" %>
+				<li><a href="<%= href_base + (@page_number.to_i - 100).to_s %>" class="tiny button"><<<</a></li>
+				<li><a href="<%= href_base + (@page_number.to_i - 10).to_s %>" class="tiny button"><<</a></li>
+				<li><a href="<%= href_base + (@page_number.to_i - 1).to_s %>" class="tiny button"><</a></li>				
+				<li><a href="<%= href_base + (@page_number.to_i).to_s %>" class="tiny button"><%= @page_number.to_i + 1%></a></li>				
+				<li><a href="<%= href_base + (@page_number.to_i + 1).to_s %>" class="tiny button">></a></li>				
+				<li><a href="<%= href_base + (@page_number.to_i + 10).to_s %>" class="tiny button">>></a></li>				
+				<li><a href="<%= href_base + (@page_number.to_i + 100).to_s %>" class="tiny button">>>></a></li>
+			</ul>
+		</div>
+	</div>
+</form>

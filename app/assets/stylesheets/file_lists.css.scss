@@ -1,0 +1,27 @@
+// Place all the styles related to the FileLists controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+// Settings file to override Foundation variables
+
+// You can find the variables for each component at the bottom of their
+// doc page. We tried to name them to where they'd make sense just by reading them.
+// Go to http://foundation.zurb.com/docs/ to find what you need.
+
+$block-grid-default-spacing: 15px;
+
+
+/* Typography */
+$header-font-family: "myriad-pro", sans-serif;
+$header-font-color: #635F5F;
+$anchor-font-color: #F47F75;
+$anchor-font-color-hover: #F47F75;
+
+
+/* Navigation */
+
+$topBarBgColor: none;
+
+/* Slideshow */
+$orbit-caption-bg: rgba(255,255,255,0.6);
+$orbit-caption-font-color: #ddd;

@@ -1,0 +1,95 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "bundler/setup"
+require "nokogiri"
+require 'open-uri'
+require "mailman"
+require "smarter_csv"
+
+require '/root/rails_projects/catalog/config/environment.rb'
+
+require 'smarter_csv'
+options = {}
+@files = Dir.glob("/root/catalog/*.csv")
+
+number_of_entries_overall = 0
+@files.each do |csvfile|
+  number_of_entries = 0
+  puts csvfile
+  inserts = []
+  tmpfile1 = "/tmp/catalog.1"
+  tmpfile1_file = File.open(tmpfile1, "w")
+  File.open(csvfile, "r").each_line do |line|
+    cleaned_line = ""
+    line.each_byte { |x|  cleaned_line << x unless ((x > 127) || (x == 39)) }
+    tmpfile1_file.write(cleaned_line)
+  end
+  tmpfile1_file.close()
+  SmarterCSV.process(tmpfile1, options) do |chunk|
+    chunk.each do |data_hash|
+      inserts.push "('#{data_hash[:disk]}','#{data_hash[:filename]}')"
+      begin
+        if ((number_of_entries % 1000) == 0)
+          puts csvfile + " " + number_of_entries.to_s + " " + number_of_entries_overall.to_s # + ": #{inserts.join(", ")}"
+          sql = "INSERT INTO file_lists (`disk`, `filename`) VALUES #{inserts.join(", ")}"
+          records_array = ActiveRecord::Base.connection.execute(sql)
+          inserts = []
+        end
+      rescue
+        puts csvfile + " " + number_of_entries.to_s + " " + number_of_entries_overall.to_s + " failed to insert "# + sql
+      end
+      number_of_entries += 1
+      number_of_entries_overall += 1
+    end
+  end
+  if (!inserts.empty?)
+    begin
+      puts csvfile + " " + number_of_entries.to_s + " " + number_of_entries_overall.to_s # + ": #{inserts.join(", ")}"
+      sql = "INSERT INTO file_lists (`disk`, `filename`) VALUES #{inserts.join(", ")}"
+      records_array = ActiveRecord::Base.connection.execute(sql)
+      inserts = []
+    rescue
+      puts csvfile + " " + number_of_entries.to_s + " " + number_of_entries_overall.to_s + " failed to insert "# + sql
+    end
+  end    
+end
+
+
+
+
+=begin
+number_of_entries_overall = 0
+@files.each do |csvfile|
+  number_of_entries = 0
+  puts csvfile
+  SmarterCSV.process(csvfile, options) do |chunk|
+  	chunk.each do |data_hash|
+      if ((number_of_entries % 100) == 0)
+        puts csvfile + " " + number_of_entries.to_s + " " + number_of_entries_overall.to_s
+      end
+      number_of_entries += 1
+      number_of_entries_overall += 1
+		  FileList.create!( data_hash )
+  	end
+  end
+end
+=end
+
+=begin
+
+data = File.read("/tmp/rw4")
+mail_body = data.split("\n")
+from = ""
+line_number = 1
+mail_body.each do |line|
+  if line.include? "cwjobs"
+    from = "cwjobs"
+  end
+  if line.include? "email.jobsite.co.uk"
+    from = "jobsite"
+  end
+end
+if from.length > 0
+  Job.scrape(mail_body, from)
+end
+=end

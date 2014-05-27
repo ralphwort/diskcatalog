@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "bundler/setup"
+require "nokogiri"
+require 'open-uri'
+require "mailman"
+require "smarter_csv"
+
+require '/root/rails_projects/catalog/config/environment.rb'
+
+require 'smarter_csv'
+options = {}
+
+SmarterCSV.process("/root/catalog/disks.csv", options) do |chunk|
+	chunk.each do |data_hash|
+	  Disk.create!( data_hash )
+	end
+end
+

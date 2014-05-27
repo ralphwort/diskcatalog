@@ -1,0 +1,38 @@
+
+<div class="row">
+  <div class="small-12 columns">
+    <%= render :partial => 'search' %>
+  </div>
+</div>
+<div class="row">
+  <div class="small-12 columns">
+    <%= render :partial => 'pages' %>
+  </div>
+</div>
+<div id="filename_detail">
+</div>
+<div class="row">
+  <div class="small-2 small-text-center medium-up-text-left columns">
+    <h6>Disk</h6>
+  </div>
+  <div class="small-6 small-text-center medium-up-text-left columns">
+    <h6>File Name</h6>
+  </div>
+</div>
+
+
+<div class="panel">
+  <% @file_lists.each do |file_list| %>
+    <div class="row">
+      <div class="small-2 small-text-center small-text-left medium-up-text-left columns">
+        <%= file_list.disk %>
+      </div>
+      <div class="small-10 small-text-left medium-up-text-left columns">
+        <span class="spec1"><a onclick="set_detail('<%= file_list.filename %>', <%= file_list.id %>)"
+          onmouseover="set_detail('<%= file_list.filename %>', <%= file_list.id %>)">
+          <div id="filename<%= file_list.id%>"><script>trim_string('<%= file_list.filename %>',
+            <%= file_list.id %>)</script></div></a></span>
+      </div>
+    </div>
+  <% end %>
+</div>

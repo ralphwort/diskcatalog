@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "bundler/setup"
+require "nokogiri"
+require 'open-uri'
+require "mailman"
+
+require '/root/rw5/config/environment.rb'
+
+Mailman.config.pop3 = {
+  :username => 'ralphwort1@gmail.com',
+  :password => 'conflon788',
+  :server   => 'pop.gmail.com',
+  :port     => 995, # defaults to 110
+  :ssl      => true # defaults to false
+}
+
+Mailman.config.poll_interval = 5
+
+data = File.read("/tmp/analysed")
+doc = Nokogiri::HTML(data, &:noblanks)
+items = doc.css('td table tr td')
+items.each do |item|
+    puts "RGW_____________________|" + item + "------------"
+end
+
+=begin
+Mailman::Application.run do
+  default do
+    begin
+      doc = Nokogiri::HTML(message.html_part.body.decoded, &:noblanks)
+      line_no = 0
+      put inspect.doc
+      doc.each do |item|
+        puts item.value
+      end
+    rescue
+    end
+  end
+end
+
+=end
+

@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "bundler/setup"
+require "nokogiri"
+require 'open-uri'
+require "mailman"
+
+require '/root/rw5/config/environment.rb'
+
+Mailman.config.pop3 = {
+  :username => 'ralphwort1@gmail.com',
+  :password => 'conflon788',
+  :server   => 'pop.gmail.com',
+  :port     => 995, # defaults to 110
+  :ssl      => true # defaults to false
+}
+
+Mailman.config.poll_interval = 5
+
+=begin
+data = File.read("/tmp/rw4")
+mail_body = data.split("\n")
+from = ""
+line_number = 1
+mail_body.each do |line|
+  if line.include? "cwjobs"
+    from = "cwjobs"
+  end
+  if line.include? "email.jobsite.co.uk"
+    from = "jobsite"
+  end
+end
+if from.length > 0
+  Job.scrape(mail_body, from)
+end
+=end
+
+
+Mailman::Application.run do
+  default do
+    begin
+      mail_body1 = message.text_part.body.decoded
+      mail_body = mail_body1.split("\n")
+      from = ""
+      line_number = 1
+      mail_body.each do |line|
+        if line.include? "cwjobs"
+          from = "cwjobs"
+        end
+        if line.include? "jobsite.co.uk"
+          from = "jobsite"
+        end
+        if line.include? "totaljobs.com"
+          from = "totaljobs"
+        end
+        if line.include? "jobisjob"
+          from = "jobisjob"
+        end
+      end
+      if from.length > 0
+        Job.scrape(from, message.html_part.body.decoded)
+      end
+    rescue
+      puts $!, $@
+    end
+  end
+end

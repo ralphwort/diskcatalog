@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "bundler/setup"
+require "nokogiri"
+require 'open-uri'
+require "mailman"
+
+require '/root/rw5/config/environment.rb'
+
+Mailman.config.pop3 = {
+  :username => 'ralphwort1@gmail.com',
+  :password => 'conflon788',
+  :server   => 'pop.gmail.com',
+  :port     => 995, # defaults to 110
+  :ssl      => true # defaults to false
+}
+
+Mailman.config.poll_interval = 5
+
+Mailman::Application.run do
+  default do
+    begin
+      file = File.open("/tmp/analysed", 'w')
+      file.write(message)
+      file.close()
+      doc = Nokogiri::HTML(message.html_part.body.decoded, &:noblanks)
+      line_no = 0
+      file = File.open("/tmp/analysed.td", 'w')
+      doc.search('td').each do |item|
+        file.puts "#{line_no} #{item}"
+        line_no += 1
+      end
+    rescue
+    end
+  end
+end
