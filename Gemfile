@@ -43,6 +43,5 @@ gem 'gmaps4rails'
 gem 'mailman', require:false
 gem 'nokogiri'
 gem 'smarter_csv'
-gem 'mysql'
 
 gem 'foundation-rails'

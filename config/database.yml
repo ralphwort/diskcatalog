@@ -1,18 +1,19 @@
+default: &default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
 development:
-  adapter: mysql
-  database: library_development
-  username: root
-  password: socrates
-  host: localhost
-test:
-  adapter: mysql
-  database: library_test
-  username: root
-  password: socrates
-  host: localhost
+  <<: *default
+  database: db/development.sqlite3
+
+test: &test
+  <<: *default
+  database: db/test.sqlite3
+
 production:
-  adapter: mysql
-  database: library_production
-  username: root
-  password: socrates
-  host: localhost
+  <<: *default
+  database: db/production.sqlite3
+
+cucumber:
+  <<: *test
